@@ -5,22 +5,47 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" Background="Beige">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Width" Value="150"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+            <Setter Property="FontSize" Value="18"></Setter>
+            <Setter Property="Margin" Value="20, 5"></Setter>
+            <Setter Property="Padding" Value="3"></Setter>
+            <Setter Property="Background" Value="#FFF0F09C"></Setter>
+            <Setter Property="FontFamily" Value="Bahnschrift"></Setter>
+        </Style>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"></Setter>
+            <Setter Property="FontFamily" Value="Bahnschrift"></Setter>
+            <Setter Property="Margin" Value="20, 5"></Setter>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Width" Value="150"></Setter>
+            <Setter Property="FontSize" Value="18"></Setter>
+            <Setter Property="Padding" Value="3"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+            <Setter Property="Margin" Value="20, 5"></Setter>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.5*"></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0">
+        <StackPanel Grid.Column="0" VerticalAlignment="Center">
             <TextBlock>Enter port:</TextBlock>
             <TextBox x:Name="portTB"></TextBox>
             <Button x:Name="connectBT" Click="connectBT_Click">Connect</Button>
 
-            <TextBlock>Upload image:</TextBlock>
+            <TextBlock Margin="20,40,20,5">Upload image:</TextBlock>
             <StackPanel Orientation="Horizontal">
-                <TextBox x:Name="imagePathTB">dfgdfgregferferg</TextBox>
-                <Button x:Name="loadImagePathBT" Click="loadImagePathBT_Click">...</Button>
+                <TextBox x:Name="imagePathTB"></TextBox>
+                <Button x:Name="loadImagePathBT" Click="loadImagePathBT_Click" Width="20" Margin="-10, 5">...</Button>
             </StackPanel>
             <Button x:Name="uploadBT" Click="uploadBT_Click">Upload</Button>
         </StackPanel>
