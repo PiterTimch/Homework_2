@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Client.Connecting;
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Text.Json;
 using System.Windows;
@@ -18,10 +20,27 @@ namespace Client
             InitializeComponent();
         }
 
-        private void connectBT_Click(object sender, RoutedEventArgs e)
+        private async void connectBT_Click(object sender, RoutedEventArgs e)
         {
-            _httpClient = new HttpClient { BaseAddress = new Uri($"http://localhost:{this.portTB.Text}") };
-            System.Windows.MessageBox.Show("Connected to the server!");
+            try
+            {
+                _httpClient = new HttpClient { BaseAddress = new Uri($"http://localhost:{this.portTB.Text}") };
+
+                HttpResponseMessage response = await _httpClient.PostAsync("api/Galleries/upload", null); //для тесту
+
+                if (response.StatusCode != System.Net.HttpStatusCode.NotFound)
+                {
+                    System.Windows.MessageBox.Show("Connected to the server!", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    throw new Exception("Invalid port");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void loadImagePathBT_Click(object sender, RoutedEventArgs e)
@@ -42,44 +61,15 @@ namespace Client
         {
             string imagePath = imagePathTB.Text;
 
-            if (string.IsNullOrEmpty(imagePath) || !File.Exists(imagePath))
-            {
-                System.Windows.MessageBox.Show("Please select a valid image file.");
-                return;
-            }
-
             try
             {
-                // Читання зображення і конвертація в Base64
-                byte[] imageBytes = File.ReadAllBytes(imagePath);
-                string base64Image = Convert.ToBase64String(imageBytes);
-
-                var uploadData = new { Photo = $"data:image/jpeg;base64,{base64Image}" };
-                var content = new StringContent(JsonSerializer.Serialize(uploadData), Encoding.UTF8, "application/json");
-
-                // Відправлення зображення на сервер
-                HttpResponseMessage response = await _httpClient.PostAsync("api/Galleries/upload", content);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    // Отримання URL завантаженого зображення
-                    var responseData = await response.Content.ReadAsStringAsync();
-                    var imageUrl = JsonDocument.Parse(responseData).RootElement.GetProperty("image").GetString();
-
-                    // Відображення зображення
-                    var fullUrl = new Uri(_httpClient.BaseAddress, imageUrl);
-                    imageLabel.Source = new BitmapImage(fullUrl);
-
-                    System.Windows.MessageBox.Show("Image uploaded successfully!");
-                }
-                else
-                {
-                    System.Windows.MessageBox.Show($"Error uploading image: {response.StatusCode}");
-                }
+                this.imageLabel.Source = ImageSender.GetImageFromServer(
+                    await ImageSender.UploadImageAsync(imagePath, _httpClient), _httpClient
+                    );
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show($"Error: {ex.Message}");
+                System.Windows.MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }
