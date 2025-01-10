@@ -1,0 +1,30 @@
+﻿<Window x:Class="Client.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Client"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.5*"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0">
+            <TextBlock>Enter port:</TextBlock>
+            <TextBox x:Name="portTB"></TextBox>
+            <Button x:Name="connectBT" Click="connectBT_Click">Connect</Button>
+
+            <TextBlock>Upload image:</TextBlock>
+            <StackPanel Orientation="Horizontal">
+                <TextBox x:Name="imagePathTB">dfgdfgregferferg</TextBox>
+                <Button x:Name="loadImagePathBT" Click="loadImagePathBT_Click">...</Button>
+            </StackPanel>
+            <Button x:Name="uploadBT" Click="uploadBT_Click">Upload</Button>
+        </StackPanel>
+
+        <Image Grid.Column="1" x:Name="imageLabel"></Image>
+    </Grid>
+</Window>
