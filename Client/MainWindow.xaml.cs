@@ -31,6 +31,7 @@ namespace Client
                 if (response.StatusCode != System.Net.HttpStatusCode.NotFound)
                 {
                     System.Windows.MessageBox.Show("Connected to the server!", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    ChangeControlState();
                 }
                 else
                 {
@@ -71,6 +72,16 @@ namespace Client
             {
                 System.Windows.MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void ChangeControlState() 
+        {
+            this.connectBT.IsEnabled = !this.connectBT.IsEnabled;
+            this.loadImagePathBT.IsEnabled = !this.loadImagePathBT.IsEnabled;
+            this.uploadBT.IsEnabled = !this.uploadBT.IsEnabled;
+            
+            this.imagePathTB.IsEnabled = !this.imagePathTB.IsEnabled;
+            this.portTB.IsEnabled = !this.portTB.IsEnabled;
         }
     }
 }

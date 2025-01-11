@@ -29,14 +29,19 @@ namespace Server.Controllers
 
                 using (Image image = Image.Load(byteArray))
                 {
-                    image.Mutate(x => x.Resize(x.GetCurrentSize().Width / 2, x.GetCurrentSize().Height / 2));
+                    var compressedImage = CompressImage(image);
 
                     string folderName = "uploads";
                     string pathFolder = Path.Combine(Directory.GetCurrentDirectory(), folderName);
 
+                    if (!Directory.Exists(pathFolder))
+                    {
+                        Directory.CreateDirectory(pathFolder);
+                    }
+
                     string outPath = Path.Combine(pathFolder, fileName);
 
-                    image.Save(outPath);
+                    compressedImage.Save(outPath);
                     return Ok(new { Image = $"/images/{fileName}" });
                 }
             }
@@ -45,5 +50,22 @@ namespace Server.Controllers
                 return BadRequest(new { error = ex.Message });
             }
         }
+
+        private Image CompressImage(Image image)
+        {
+            int originalWidth = image.Width;
+            int originalHeight = image.Height;
+
+            double compressionFactor = originalWidth * originalHeight > 1920 * 1080 ? 0.2 :
+                                       originalWidth * originalHeight > 1280 * 720 ? 0.4 : 0.7;
+
+            int newWidth = (int)(originalWidth * compressionFactor);
+            int newHeight = (int)(originalHeight * compressionFactor);
+
+            var compressedImage = image.Clone(ctx => ctx.Resize(newWidth, newHeight));
+
+            return compressedImage;
+        }
+
     }
 }
